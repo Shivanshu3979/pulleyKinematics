@@ -1,0 +1,390 @@
+<html>
+<head>
+<title>Pully Designs</title>
+<script src="jquery.min.js"></script>
+<script src="fabric.min.js"></script>
+<style>
+#visualise{
+	background:#fff;
+	box-shadow:1px 1px 20px 3px #333;
+	border-radius:5px;
+	z-index:1;
+	position:absolute;
+	top:200;
+}
+input[type="button"]{
+	z-index:20;
+	position:relative;
+	padding:8px 10px;
+	background:rgba(22,22,22,0.8);
+	color:white;
+	border:1px solid black;
+	font-weight:bolder;
+}
+div{
+	position:absolute;
+}
+ul{
+	display:flex;
+}
+.btclass{
+	list-style-type:none;
+	float:right;
+}
+input[type="button"]:hover{
+	padding:10px 12px;
+	background:rgba(11,11,11,0.9)
+}
+input{
+	border:1px solid black;
+	font-weight:bolder;
+	z-index:20;
+}
+.innerspan{
+	position:relative;
+	z-index:20;
+}
+#result{
+	background:#222222;
+	width:400;
+	height:200;
+	position:relative;
+	top:-220px;
+	z-index:20;
+	color:white;
+	padding:5px;
+	
+}
+#result table{
+	color:white;
+	font-size:15px;
+}
+.documentation{
+	position:absolute;
+	right:100;
+	padding:20px;
+	top:10px;
+	width:500px;
+	background:#333;
+	color:white;
+	font-weight:bolder;
+	z-index:20;
+}
+h1{
+	font-size:60;
+}
+.documentation li{
+	list-style-type: disc;
+	float:top;
+	font-size:20px;
+}
+</style>
+</head>
+
+<!--Buttons-->
+
+<ul>
+<li class="btclass"><input type="button" id="bt0" value="Inclined Surface" /></li>
+<li class="btclass"><input type="button" id="bt1" value="flat Surface"></li>
+</ul>
+<span class="innerspan">
+<table>
+<tr><td>kineticFriction:</td><td><input id="kineticFriction" placeholder='kFriction' value="0"></td></tr>
+<tr><td>staticFriction:</td><td><input id="staticFriction" placeholder='sFriction' value="0"></td></tr>
+<tr><td>theta(0-90):</td><td><input id="theta" placeholder='theta' value="0"></td></tr>
+<tr><td>Mass of body 1:</td><td><input id="m1" placeholder='mass of body 1' value="0"></td></tr>
+<tr><td>Mass of body 2:</td><td><input id="m2" placeholder='mass of body 2' value="0"></td></tr>
+</table>
+<input type="button" value="calculate" id="cal" value="0">
+</span>
+<div class="visual">
+<canvas id="visualise" width="800" height="670"></canvas>
+<p id="result">Results</p>
+</div>
+<div class="documentation">
+<h1>Pulley Kinematics</h1>
+
+<li>There are two buttons labeled as "Inclined Surface" and "flat Surface".</li>
+<li>Both contains some input fields.</li>
+<li>Both Theta value and friction value cannot be empty for inclined surface</li>
+<li>Default for every field is 0.<li>
+<li>Calculation will be shown in Result Section in the lower left corner</l1>
+<li>After Entering all the valid data, Hit Calculate button to get your results and
+and the required animation will be shown in canvas.</li>
+
+</div>
+<script>
+var canvas= new fabric.Canvas('visualise');
+class inclined{
+	constructor(canvas){
+		canvas.clear()
+		$("#theta").css("display","block")
+			this.surface= new fabric.Triangle({
+			left:700,
+			top:300,
+			fill:'#666',
+			width:520,
+			height:200,
+			angle:143
+		});
+			this.pully= new fabric.Circle({
+			left:550,
+			top:105,
+			radius:20,
+			strokeWidth:20,
+			stroke:'black',
+			fill:'white'
+		})
+			this.body0= new fabric.Rect({
+			left:350,
+			top:250,
+			width:60,
+			height:50,
+			fill:'red',
+			angle:-37
+		})
+			this.string0= new fabric.Line([this.body0.left+62,this.body0.top-15,this.pully.left+2,this.pully.top+20],{
+			stroke:'green'
+		})
+		
+			this.body1=new fabric.Rect({
+			left:575,
+			top:300,
+			width:60,
+			height:50,
+			fill:'red'
+		})
+			this.string1= new fabric.Line([this.pully.left+55,this.pully.top+45,this.body1.left+30,this.body1.top],{
+			stroke:'green'
+		})
+		canvas.add(this.surface)
+		canvas.add(this.body0)
+		canvas.add(this.pully)
+		canvas.add(this.string0)
+		canvas.add(this.string1)
+		canvas.add(this.body1)
+	}
+	
+	anticlock(){
+		window.instance= new inclined(canvas)
+		instance.body1.animate("top","200",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("top","300"),{
+			onChange:canvas.renderAll.bind(canvas)
+		}
+		instance.string1.animate("y2","200",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("top","333",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("left","240",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		
+		instance.string0.animate("x1","300",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.string0.animate("y1","320",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		
+	}
+	clock(){
+		window.instance= new inclined(canvas)
+		instance.body1.animate("top","450",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.string1.animate("y2","450",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("top","168",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("left","460",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		
+		instance.string0.animate("x1","523",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.string0.animate("y1","152",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+	}
+	type(){
+		return "inclined"
+	}
+}
+
+class flat{
+	constructor(canvas){
+		canvas.clear()
+		$("#theta").css("display","none")
+			this.surface= new fabric.Rect({
+			left:100,
+			top:300,
+			width:400,
+			height:10,
+			fill:'black'
+		})
+			this.body0= new fabric.Rect({
+			left:200,
+			top:250,
+			width:60,
+			height:50,
+			fill:'red'
+		})
+			this.pully= new fabric.Circle({
+			left:480,
+			top:260,
+			radius:20,
+			strokeWidth: 25,
+			fill:'#fff',
+			stroke:'#ff6700'
+		})
+			this.string0= new fabric.Line([this.body0.left+55,this.body0.top+25,this.pully.left+7,this.pully.top+15],{
+			stroke:'green'
+		})
+		
+			this.body1=new fabric.Rect({
+			left:510,
+			top:350,
+			width:60,
+			height:50,
+			fill:'red'
+		})
+			this.string1= new fabric.Line([this.pully.left+60,this.pully.top+50,this.body1.left+30,this.body1.top],{
+			stroke:'green'
+		})
+		console.log(this.pully.left+60,this.pully.top+55,this.body1.left+30,this.body1.top)
+		canvas.add(this.surface)
+		canvas.add(this.body0)
+		canvas.add(this.pully)
+		canvas.add(this.string0)
+		canvas.add(this.string1)
+		canvas.add(this.body1)
+		}
+	anticlock(){
+		window.instance= new flat(canvas)
+	}
+	clock(){
+		window.instance= new flat(canvas)
+		instance.body1.animate("top","500",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.body0.animate("left","400",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.string0.animate("x1","455",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+		instance.string1.animate("y2","500",{
+			onChange:canvas.renderAll.bind(canvas)
+		})
+	
+	}
+	type(){
+		return "flat"
+	}
+}
+window.instance= new inclined(canvas);
+$("#bt0").click(function(){
+			canvas.clear();
+			window.instance= new inclined(canvas);
+		})
+$("#bt1").click(function(){
+			canvas.clear();
+			window.instance= new flat(canvas);
+})
+function calculate(){
+	let Fk=parseFloat($("#kineticFriction").val())
+	let Fs=parseFloat($("#staticFriction").val())
+	if(Fs==NaN && Fk==NaN){
+		return "Invalid cofficients Entered"
+	}
+	else if(Fk==NaN){
+		Fk=0
+	}
+	else if(Fs==NaN){
+		Fs=0
+	}
+	let theta=parseFloat($("#theta").val())*((22/7)/180)
+	let m1=parseFloat($("#m1").val())
+	let m2=parseFloat($("#m2").val())
+	
+	
+	if(instance.type()=="inclined"){
+	if(theta==0 || theta==NaN){
+		if((Fs==NaN && Fk==NaN) || (Fs==0 && Fk==0)){
+			return "theta and and friction both can't be empty"
+		}
+		else
+			theta=Math.atan(Fs)
+	}
+	normal= m1*Math.cos(theta)
+	if(Fs==0){
+		Fs=(Fk*m1)/normal
+	}
+	
+	acc=(((m2-(m1*Math.sin(theta)*Fs))*9.81)/(m1+m2)).toFixed(1)
+	var kF=9.81*normal*Fs/m1
+	var Fm=m1*Math.sin(theta)*Fs
+	let tm1=(m1*Math.sin(theta)*9.81*Fs)-(m1*acc)
+	let tm2=Fs* m1* Math.cos(theta)*9.81
+	console.log(tm1-tm2)
+	var tension=(9.81*Math.sin(theta)*Fs-acc)*m1 + m2*9.81
+	}
+	else if(instance.type()=="flat"){
+	theta=0;
+	normal= m1
+	if(Fs==0){
+		Fs=(Fk*m1)/normal
+	}
+	acc=(m2*9.81-Fs*m1*9.81)/(m1+m2)
+	if(acc<0){
+		acc=0;
+	}
+	var kF=normal*Fs/m1
+	var Fm=m1*Fs*acc
+	let tm2=(m2*9.81)-m2*acc
+	var tension=(Fs*m1*9.81)+m1*acc
+	}
+	string="<table><tr><td>Tension in String:</td><td> "+tension+"</td></tr><tr>"+"<td>force Required for motion:</td><td> "+String(Fm)+"</td></tr>";
+	string+="<tr><td>total Force on Body 1:</td><td>"+String(tension)+"</td></tr>"
+	if((acc>0 && Fm<=tension)){
+		string+="<tr><td>System will move Clockwise</td></tr>"
+		instance.clock()
+	}
+	else if(acc<0 ){
+		if(instance.type()=="flat")
+			string+="<tr><td>System will not move</td></tr>"
+		else{
+			string+="<tr><td>System will move Anti-Clock Wise</td></tr>"
+		}
+		instance.anticlock()
+	}
+	else{
+		string+="<td><tr>System is in equilibrium</td></tr>"
+	}
+	if(Fk==parseFloat("0")){
+		string+="<tr><td>Coeficient Kinetic Friction:</td><td>"+kF+"</td></tr>"
+	}
+	string+="<tr><td>acceleration:</td><td>"+acc+"</td></tr>"
+	string+="<tr><td>Friction(static):</td><td>"+Fs+"</td></tr>"
+	string+="<tr><td>Friction(kinetic):</td><td>"+kF+"</td></tr>"
+	string+="<tr><td>theta:</td><td>"+theta+"</td></tr>"
+	string+="</table>"
+	return string
+	
+}
+$("#cal").click(function(){
+	string=calculate("#kineticFriction")
+	$("#result").html(string)
+	
+})
+
+</script>
+</body>
+</head>
